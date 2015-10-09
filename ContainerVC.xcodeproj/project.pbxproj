@@ -16,6 +16,8 @@
 		02666A581BC7950300DCF1F1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02666A561BC7950300DCF1F1 /* LaunchScreen.storyboard */; };
 		02666A631BC7950300DCF1F1 /* ContainerVCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 02666A621BC7950300DCF1F1 /* ContainerVCTests.m */; };
 		02666A6E1BC7950300DCF1F1 /* ContainerVCUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 02666A6D1BC7950300DCF1F1 /* ContainerVCUITests.m */; };
+		02666A801BC7A17C00DCF1F1 /* DSSCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 02666A7F1BC7A17C00DCF1F1 /* DSSCollectionViewCell.m */; };
+		02666A831BC7A1B500DCF1F1 /* DSSPPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 02666A821BC7A1B500DCF1F1 /* DSSPPViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,10 @@
 		02666A691BC7950300DCF1F1 /* ContainerVCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ContainerVCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		02666A6D1BC7950300DCF1F1 /* ContainerVCUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContainerVCUITests.m; sourceTree = "<group>"; };
 		02666A6F1BC7950300DCF1F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		02666A7E1BC7A17C00DCF1F1 /* DSSCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSSCollectionViewCell.h; sourceTree = "<group>"; };
+		02666A7F1BC7A17C00DCF1F1 /* DSSCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSSCollectionViewCell.m; sourceTree = "<group>"; };
+		02666A811BC7A1B500DCF1F1 /* DSSPPViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSSPPViewController.h; sourceTree = "<group>"; };
+		02666A821BC7A1B500DCF1F1 /* DSSPPViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSSPPViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +119,10 @@
 				02666A591BC7950300DCF1F1 /* Info.plist */,
 				02666A511BC7950300DCF1F1 /* ContainerVC.xcdatamodeld */,
 				02666A451BC7950200DCF1F1 /* Supporting Files */,
+				02666A7E1BC7A17C00DCF1F1 /* DSSCollectionViewCell.h */,
+				02666A7F1BC7A17C00DCF1F1 /* DSSCollectionViewCell.m */,
+				02666A811BC7A1B500DCF1F1 /* DSSPPViewController.h */,
+				02666A821BC7A1B500DCF1F1 /* DSSPPViewController.m */,
 			);
 			path = ContainerVC;
 			sourceTree = "<group>";
@@ -274,8 +284,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				02666A531BC7950300DCF1F1 /* ContainerVC.xcdatamodeld in Sources */,
+				02666A831BC7A1B500DCF1F1 /* DSSPPViewController.m in Sources */,
 				02666A4D1BC7950200DCF1F1 /* ViewController.m in Sources */,
 				02666A4A1BC7950200DCF1F1 /* AppDelegate.m in Sources */,
+				02666A801BC7A17C00DCF1F1 /* DSSCollectionViewCell.m in Sources */,
 				02666A471BC7950200DCF1F1 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -502,6 +514,7 @@
 				02666A741BC7950400DCF1F1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		02666A751BC7950400DCF1F1 /* Build configuration list for PBXNativeTarget "ContainerVCTests" */ = {
 			isa = XCConfigurationList;
@@ -510,6 +523,7 @@
 				02666A771BC7950400DCF1F1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		02666A781BC7950400DCF1F1 /* Build configuration list for PBXNativeTarget "ContainerVCUITests" */ = {
 			isa = XCConfigurationList;
@@ -518,6 +532,7 @@
 				02666A7A1BC7950400DCF1F1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
