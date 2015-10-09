@@ -20,18 +20,19 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
-    
-
 
     DSSPPViewController *ppVC = [[DSSPPViewController alloc] init];
+    NSMutableArray<UIViewController *> *tmpArray =
+        [NSMutableArray arrayWithCapacity:10];
     for (int i = 0; i < 20; i++) {
         UIViewController *vc = [[UIViewController alloc] init];
         vc.title = [NSString stringWithFormat:@"abcde%d", i];
         vc.view.backgroundColor = [UIColor blueColor];
-        [ppVC addChildViewController:vc];
-//        [vc didMoveToParentViewController:ppVC];
+        [tmpArray addObject:vc];
+        //        [vc didMoveToParentViewController:ppVC];
     }
-    
+    ppVC.viewControllers = [tmpArray copy];
+
     self.window.rootViewController = ppVC;
     [self.window makeKeyAndVisible];
     return YES;
