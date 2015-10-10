@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "DSSPPViewController.h"
+#import "DSSViewController.h"
 
 @interface AppDelegate ()
 
@@ -24,14 +25,13 @@
     DSSPPViewController *ppVC = [[DSSPPViewController alloc] init];
     NSMutableArray<UIViewController *> *tmpArray =
         [NSMutableArray arrayWithCapacity:10];
-    for (int i = 0; i < 20; i++) {
-        UIViewController *vc = [[UIViewController alloc] init];
+
+    for (int i = 0; i < 10; i++) {
+        DSSViewController *vc = [[DSSViewController alloc] init];
         vc.title = [NSString stringWithFormat:@"abcde%d", i];
         vc.view.backgroundColor = [UIColor blueColor];
-        [tmpArray addObject:vc];
-        //        [vc didMoveToParentViewController:ppVC];
+        [ppVC addChildViewController:vc];
     }
-    ppVC.viewControllers = [tmpArray copy];
 
     self.window.rootViewController = ppVC;
     [self.window makeKeyAndVisible];

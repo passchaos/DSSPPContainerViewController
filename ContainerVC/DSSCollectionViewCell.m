@@ -12,8 +12,14 @@
 - (nonnull instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         _titleLabel = [[UILabel alloc] init];
-        [self addSubview:_titleLabel];
-        
+        _titleLabel.highlightedTextColor = [UIColor redColor];
+        [self.contentView addSubview:_titleLabel];
+
+        // 添加观察者，监测selected状态
+        [self addObserver:self
+               forKeyPath:@"selected"
+                  options:NSKeyValueObservingOptionNew
+                  context:NULL];
         [self initializeFrame];
     }
     return self;
@@ -23,19 +29,29 @@
     // titleLabel的约束
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     NSDictionary<NSString *, id> *viewDict =
-    @{ @"titleLabel" : self.titleLabel };
+        @{ @"titleLabel" : self.titleLabel };
     NSArray<NSLayoutConstraint *> *cst1 =
-    [NSLayoutConstraint constraintsWithVisualFormat:@"|[titleLabel]|"
-                                            options:0
-                                            metrics:nil
-                                              views:viewDict];
+        [NSLayoutConstraint constraintsWithVisualFormat:@"|[titleLabel]|"
+                                                options:0
+                                                metrics:nil
+                                                  views:viewDict];
     NSArray<NSLayoutConstraint *> *cst2 =
-    [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[titleLabel]|"
-                                            options:0
-                                            metrics:nil
-                                              views:viewDict];
+        [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[titleLabel]|"
+                                                options:0
+                                                metrics:nil
+                                                  views:viewDict];
     [NSLayoutConstraint
-     activateConstraints:[cst1 arrayByAddingObjectsFromArray:cst2]];
+        activateConstraints:[cst1 arrayByAddingObjectsFromArray:cst2]];
+}
+
+- (void)observeValueForKeyPath:(nullable NSString *)keyPath
+                      ofObject:(nullable id)object
+                        change:(nullable NSDictionary<NSString *, id> *)change
+                       context:(nullable void *)context {
+    if ([keyPath isEqualToString:@"selected"]) {
+        NSLog(@"%@ %@", change, [self class]);
+        self.titleLabel.highlighted = [change[@"new"] boolValue];
+    }
 }
 
 + (BOOL)requiresConstraintBasedLayout {

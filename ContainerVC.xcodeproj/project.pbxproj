@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		023545D31BC7CD4300BBCFA1 /* DSSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 023545D21BC7CD4300BBCFA1 /* DSSViewController.m */; };
 		02666A471BC7950200DCF1F1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 02666A461BC7950200DCF1F1 /* main.m */; };
 		02666A4A1BC7950200DCF1F1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 02666A491BC7950200DCF1F1 /* AppDelegate.m */; };
 		02666A531BC7950300DCF1F1 /* ContainerVC.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 02666A511BC7950300DCF1F1 /* ContainerVC.xcdatamodeld */; };
@@ -36,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		023545D11BC7CD4300BBCFA1 /* DSSViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSSViewController.h; sourceTree = "<group>"; };
+		023545D21BC7CD4300BBCFA1 /* DSSViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSSViewController.m; sourceTree = "<group>"; };
 		02666A421BC7950200DCF1F1 /* ContainerVC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ContainerVC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		02666A461BC7950200DCF1F1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		02666A481BC7950200DCF1F1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -115,6 +118,8 @@
 				02666A7F1BC7A17C00DCF1F1 /* DSSCollectionViewCell.m */,
 				02666A811BC7A1B500DCF1F1 /* DSSPPViewController.h */,
 				02666A821BC7A1B500DCF1F1 /* DSSPPViewController.m */,
+				023545D11BC7CD4300BBCFA1 /* DSSViewController.h */,
+				023545D21BC7CD4300BBCFA1 /* DSSViewController.m */,
 			);
 			path = ContainerVC;
 			sourceTree = "<group>";
@@ -279,6 +284,7 @@
 				02666A4A1BC7950200DCF1F1 /* AppDelegate.m in Sources */,
 				02666A801BC7A17C00DCF1F1 /* DSSCollectionViewCell.m in Sources */,
 				02666A471BC7950200DCF1F1 /* main.m in Sources */,
+				023545D31BC7CD4300BBCFA1 /* DSSViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
