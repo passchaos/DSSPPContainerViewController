@@ -33,9 +33,24 @@
     self.titleLabel.text = title;
 }
 
+//- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+//    NSLog(@"%@ %s %@", self, __PRETTY_FUNCTION__, self.title);
+//}
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//    NSLog(@"%@ %s %@", self, __PRETTY_FUNCTION__, self.title);
+//}
+//- (void)viewWillDisappear:(BOOL)animated {
+//    [super viewWillDisappear:animated];
+//    NSLog(@"%@ %s%@", self, __PRETTY_FUNCTION__, self.title);
+//}
+//
 - (void)viewDidLoad {
     [super viewDidLoad];
+//    NSLog(@"%@ %s %@", self, __PRETTY_FUNCTION__, self.title);
     // Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor blueColor];
 }
 
 - (UILabel *)titleLabel {

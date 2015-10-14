@@ -29,9 +29,11 @@
     for (int i = 0; i < 10; i++) {
         DSSViewController *vc = [[DSSViewController alloc] init];
         vc.title = [NSString stringWithFormat:@"abcde%d", i];
-        vc.view.backgroundColor = [UIColor blueColor];
-        [ppVC addChildViewController:vc];
+//        vc.view.backgroundColor = [UIColor blueColor];
+//        [ppVC addChildViewController:vc];
+        [tmpArray addObject:vc];
     }
+    ppVC.viewControllers = tmpArray;
 
     self.window.rootViewController = ppVC;
     [self.window makeKeyAndVisible];

@@ -19,6 +19,11 @@
 
 @interface DSSPPViewController : UIViewController
 
+//@property(nonatomic, strong) DSSCollectionView *titleCollectionView;
+
+@property(nonatomic, strong) __kindof UIViewController *selectedViewController;
+@property(nonatomic, assign) NSInteger selectedIndex;
+
 @property(nonatomic, copy)
     NSArray<__kindof UIViewController *> *viewControllers;
 @property(nonatomic, strong) NSNumber *scrollableZoneHeight;

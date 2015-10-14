@@ -23,6 +23,8 @@ NSString *reuseID = @"DSSPPViewControllerReuseID";
 @property(nonatomic, copy) NSArray<NSLayoutConstraint *> *selectedVCCstArray;
 // 选中的VC
 @property(nonatomic, strong) UIViewController *selectedVC;
+// 活跃VC
+@property(nonatomic, strong) UIViewController *activeViewController;
 // 根据约束计算出所有子VC应该的frame
 @property(nonatomic, assign) CGRect selectedVCFrame;
 
@@ -31,54 +33,133 @@ NSString *reuseID = @"DSSPPViewControllerReuseID";
 @implementation DSSPPViewController
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-    //    for (UIViewController *vc in self.childViewControllers) {
-    //        [vc beginAppearanceTransition:YES animated:animated];
-    //    }
-//    [self.selectedVC beginAppearanceTransition:YES animated:animated];
     [self
         addObserver:self
          forKeyPath:@"currentIndex"
             options:NSKeyValueObservingOptionInitial |
                     NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
             context:NULL];
+
+    // 添加activeViewController的KVO
+    [self
+        addObserver:self
+         forKeyPath:@"activeViewController"
+            options:NSKeyValueObservingOptionInitial |
+                    NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+            context:NULL];
 }
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    //    for (UIViewController *vc in self.childViewControllers) {
-    //        [vc endAppearanceTransition];
-    //    }
-//    [self.selectedVC endAppearanceTransition];
-}
+
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     self.selectedVCFrame = self.selectedVC.view.frame;
+    NSLog(@"%@", NSStringFromCGRect(self.activeViewController.view.frame));
+    NSLog(@"%@", self.childViewControllers);
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     //    for (UIViewController *vc in self.childViewControllers) {
     //        [vc beginAppearanceTransition:NO animated:animated];
     //    }
-//    [self.selectedVC beginAppearanceTransition:NO animated:animated];
+
     [self removeObserver:self forKeyPath:@"currentIndex"];
+    // 删除对于activeViewController的KVO监听
+    [self removeObserver:self forKeyPath:@"activeViewController"];
 }
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    //    for (UIViewController *vc in self.childViewControllers) {
-    //        [vc endAppearanceTransition];
-    //    }
-//    [self.selectedVC endAppearanceTransition];
-}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    //    [self.view addSubview:self.spaceView];
-    self.currentIndex = 0;
+    [self.view addSubview:self.spaceView];
+    self.activeViewController = self.viewControllers.firstObject;
+
+    // 添加转场手势
+    //    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
+    //    initWithTarget:self action:@selector(handlePanGestureRecognizer:)];
+    //    [self.spaceView addGestureRecognizer:panGesture];
+    UISwipeGestureRecognizer *swipeGestureRecognizer =
+        [[UISwipeGestureRecognizer alloc]
+            initWithTarget:self
+                    action:@selector(handleSwipeGestureRecognizer:)];
+    UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
+        initWithTarget:self
+                action:@selector(handleSwipeGestureRecognizer:)];
+    [swipeLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
+    [self.spaceView addGestureRecognizer:swipeGestureRecognizer];
+    [self.spaceView addGestureRecognizer:swipeLeft];
+
+    NSLog(@"%@", self.viewControllers);
+}
+- (void)handleSwipeGestureRecognizer:
+    (UISwipeGestureRecognizer *)swipeGestureRecognizer {
+    NSLog(@"%@", swipeGestureRecognizer);
+    NSInteger index =
+        [self.viewControllers indexOfObject:self.activeViewController];
+    if (swipeGestureRecognizer.direction ==
+        UISwipeGestureRecognizerDirectionRight) {
+        if (index != 0) {
+            self.activeViewController = self.viewControllers[index - 1];
+        }
+    } else if (swipeGestureRecognizer.direction ==
+               UISwipeGestureRecognizerDirectionLeft) {
+        if (index != self.viewControllers.count - 1) {
+            self.activeViewController = self.viewControllers[index + 1];
+        }
+    }
+    //    self.activeViewController = self.viewControllers[index - 1];
+}
+- (void)updateActiveFromeViewController:(UIViewController *)fromViewController
+                                     to:(UIViewController *)toViewController
+                               animated:(BOOL)animated {
+    if (fromViewController != nil) {
+        NSLog(@"%@ %@", fromViewController, toViewController);
+        [fromViewController willMoveToParentViewController:nil];
+        [self addChildViewController:toViewController];
+
+        //        toViewController.view.frame = fromViewController.view.frame;
+        //        CGRect endFrame = CGRectMake(-375, 70, 375, 597);
+        UIView *containerView = fromViewController.view.superview;
+        CGRect endFrame = CGRectOffset(fromViewController.view.frame,
+                                       -containerView.bounds.size.width, 0);
+        //        if (<#condition#>) {
+        //            <#statements#>
+        //        }
+        [self transitionFromViewController:fromViewController
+            toViewController:toViewController
+            duration:1
+            options:animated ? UIViewAnimationOptionCurveEaseInOut
+                             : UIViewAnimationOptionTransitionNone
+            animations:^{
+                toViewController.view.frame = fromViewController.view.frame;
+                fromViewController.view.frame = endFrame;
+            }
+            completion:^(BOOL finished) {
+                [fromViewController removeFromParentViewController];
+                [toViewController didMoveToParentViewController:self];
+            }];
+    } else {
+        [self addChildViewController:toViewController];
+        [self.spaceView addSubview:toViewController.view];
+        //        toViewController.view.frame = self.spaceView.frame;
+        toViewController.view.frame = self.spaceView.bounds;
+        [toViewController didMoveToParentViewController:self];
+    }
+
+    // 更改对应activeViewController的cell
+    NSInteger index = [self.viewControllers indexOfObject:toViewController];
+    DSSCollectionViewCell *cell =
+        (DSSCollectionViewCell *)[self.ppCollectionView
+            cellForItemAtIndexPath:[NSIndexPath indexPathForItem:index
+                                                       inSection:0]];
+    [cell.titleLabel setTextColor:[UIColor redColor]];
 }
 
-#pragma mark - 监听currentIndex
+#pragma mark - KVO相关设置
 // 关闭currentIndex的自动KVO，改为手动模式，以便排除点击选中cell仍然执行耗时操作
 + (BOOL)automaticallyNotifiesObserversOfCurrentIndex {
+    return NO;
+}
+// 关闭activeViewController的自动KVO
++ (BOOL)automaticallyNotifiesObserversOfActiveViewController {
     return NO;
 }
 - (void)setCurrentIndex:(NSInteger)currentIndex {
@@ -86,102 +167,39 @@ NSString *reuseID = @"DSSPPViewControllerReuseID";
         [self willChangeValueForKey:@"currentIndex"];
         _currentIndex = currentIndex;
         [self didChangeValueForKey:@"currentIndex"];
-    } else {
-        _currentIndex = currentIndex;
     }
 }
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath
                       ofObject:(nullable id)object
                         change:(nullable NSDictionary<NSString *, id> *)change
                        context:(nullable void *)context {
-    if ([keyPath isEqualToString:@"currentIndex"]) {
-        NSInteger newIndex = [change[@"new"] integerValue];
-        UIViewController *newVC = self.viewControllers[newIndex];
-        if (change[@"old"] == nil) {
-            [self.ppCollectionView
-                selectItemAtIndexPath:[NSIndexPath indexPathForItem:newIndex
-                                                          inSection:0]
-                             animated:NO
-                       scrollPosition:
-                           UICollectionViewScrollPositionCenteredHorizontally];
-//            [self collectionView:self.ppCollectionView didSelectItemAtIndexPath:[NSIndexPath indexPathForItem:newIndex inSection:0]];
-            // 添加childViewController的view
-            [self addChildViewController:newVC];
-            [self.view addSubview:newVC.view];
-            //            NSLog(@"%@",
-            //            NSStringFromCGRect(self.spaceView.frame));
-            //            newVC.view.frame = self.spaceView.frame;
-
-            // 设置newVC的root view的约束
-            newVC.view.translatesAutoresizingMaskIntoConstraints = NO;
-            // 为了防止冲突，先删除原有的约束
-            NSDictionary *viewDict = @{
-                @"scrollableView" : self.ppCollectionView,
-                @"childCV" : newVC.view,
-                @"bottomLayoutGuide" : self.bottomLayoutGuide
-            };
-            NSArray<NSLayoutConstraint *> *cst1 = [NSLayoutConstraint
-                constraintsWithVisualFormat:
-                    @"V:[scrollableView][childCV][bottomLayoutGuide]"
-                                    options:0
-                                    metrics:nil
-                                      views:viewDict];
-            NSArray<NSLayoutConstraint *> *cst2 =
-                [NSLayoutConstraint constraintsWithVisualFormat:@"|[childCV]|"
-                                                        options:0
-                                                        metrics:nil
-                                                          views:viewDict];
-            [NSLayoutConstraint
-                activateConstraints:[cst1 arrayByAddingObjectsFromArray:cst2]];
-            [newVC didMoveToParentViewController:self];
-            self.selectedVC = newVC;
-        } else {
-            //            return;
-            NSInteger oldIndex = [change[@"old"] integerValue];
-
-            UIViewController *oldVC =
-                self.viewControllers[[change[@"old"] integerValue]];
-            [self.view addSubview:newVC.view];
-
-            [oldVC willMoveToParentViewController:nil];
-            [self addChildViewController:newVC];
-
-            CGRect oldVCNewFrame;
-            CGFloat offsetX = self.view.frame.size.width;
-            if (newIndex > oldIndex) {
-                newVC.view.frame =
-                    CGRectOffset(self.selectedVCFrame, offsetX, 0);
-                oldVCNewFrame = CGRectOffset(self.selectedVCFrame, -offsetX, 0);
-            } else {
-                newVC.view.frame =
-                    CGRectOffset(self.selectedVCFrame, -offsetX, 0);
-                oldVCNewFrame = CGRectOffset(self.selectedVCFrame, offsetX, 0);
-            }
-
-            // 进行新旧VC的切换
-            [self transitionFromViewController:oldVC
-                toViewController:newVC
-                duration:0.5
-                options:UIViewAnimationOptionCurveEaseInOut
-                animations:^{
-                    newVC.view.frame = self.selectedVCFrame;
-                    oldVC.view.frame = oldVCNewFrame;
-                }
-                completion:^(BOOL finished) {
-                    [oldVC.view removeFromSuperview];
-                    [oldVC removeFromParentViewController];
-                    [newVC didMoveToParentViewController:self];
-                    self.selectedVC = newVC;
-                }];
-        }
+    if ([keyPath isEqualToString:@"activeViewController"]) {
+        //        NSLog(@"%@", change);
+        UIViewController *oldVC = [change valueForKey:@"old"];
+        UIViewController *newVC = [change valueForKey:@"new"];
+        [self updateActiveFromeViewController:oldVC to:newVC animated:YES];
     }
 }
 
 #pragma mark - collectionViewDelegate
 - (void)collectionView:(nonnull UICollectionView *)collectionView
     didSelectItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
-        NSLog(@"%s %ld", __PRETTY_FUNCTION__, indexPath.item);
+    NSLog(@"%s %ld", __PRETTY_FUNCTION__, indexPath.item);
     self.currentIndex = indexPath.item;
+    self.activeViewController = self.viewControllers[indexPath.item];
+
+    DSSCollectionViewCell *cell = (DSSCollectionViewCell *)
+        [collectionView cellForItemAtIndexPath:indexPath];
+    [cell.titleLabel setTextColor:[UIColor redColor]];
+    //        [cell setDss_selected:YES];
+}
+- (void)collectionView:(nonnull UICollectionView *)collectionView
+    didDeselectItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    NSLog(@"%s", __PRETTY_FUNCTION__);
+    DSSCollectionViewCell *cell = (DSSCollectionViewCell *)
+        [collectionView cellForItemAtIndexPath:indexPath];
+    [cell.titleLabel setTextColor:[UIColor blackColor]];
+    //    [cell setDss_selected:NO];
 }
 
 #pragma mark - collectionViewDataSource
@@ -291,15 +309,25 @@ cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
 }
 
 #pragma mark - containerViewController related
-- (void)addChildViewController:(nonnull UIViewController *)childController {
-    [super addChildViewController:childController];
+//- (void)addChildViewController:(nonnull UIViewController *)childController {
+//    [super addChildViewController:childController];
+//
+//    // 首先设置viewControllers数组，后边的self.viewControllers使用的是getter
+//    _viewControllers =
+//        [self.viewControllers arrayByAddingObject:childController];
+//    [self.ppCollectionView reloadData];
+//    //
+//    [childController didMoveToParentViewController:self];
+//}
 
-    // 首先设置viewControllers数组，后边的self.viewControllers使用的是getter
-    _viewControllers =
-        [self.viewControllers arrayByAddingObject:childController];
-    [self.ppCollectionView reloadData];
-    //
-    [childController didMoveToParentViewController:self];
+#pragma mark - 设置activeViewController
+// 监听activeViewController
+- (void)setActiveViewController:(UIViewController *)activeViewController {
+    if (_activeViewController != activeViewController) {
+        [self willChangeValueForKey:@"activeViewController"];
+        _activeViewController = activeViewController;
+        [self didChangeValueForKey:@"activeViewController"];
+    }
 }
 
 #pragma mark - viewControllers的setter和getter

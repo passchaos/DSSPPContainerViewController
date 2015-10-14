@@ -9,17 +9,18 @@
 #import "DSSCollectionViewCell.h"
 
 @implementation DSSCollectionViewCell
+
 - (nonnull instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         _titleLabel = [[UILabel alloc] init];
-        _titleLabel.highlightedTextColor = [UIColor redColor];
+//        _titleLabel.highlightedTextColor = [UIColor redColor];
         [self.contentView addSubview:_titleLabel];
 
         // 添加观察者，监测selected状态
-        [self addObserver:self
-               forKeyPath:@"selected"
-                  options:NSKeyValueObservingOptionNew
-                  context:NULL];
+        //        [_titleLabel addObserver:self
+        //                      forKeyPath:@"highlighted"
+        //                         options:NSKeyValueObservingOptionNew
+        //                         context:NULL];
         [self initializeFrame];
     }
     return self;
@@ -48,10 +49,12 @@
                       ofObject:(nullable id)object
                         change:(nullable NSDictionary<NSString *, id> *)change
                        context:(nullable void *)context {
-    if ([keyPath isEqualToString:@"selected"]) {
-        NSLog(@"%@ %@", change, [self class]);
-        self.titleLabel.highlighted = [change[@"new"] boolValue];
-    }
+    //    if ([keyPath isEqualToString:@"selected"]) {
+    //        NSLog(@"%@ %@", change, [self class]);
+    //        self.titleLabel.highlighted = [change[@"new"] boolValue];
+    //    }
+    //    NSLog(@"%@ %@", change, self);
+    //    NSLog(@"%@ %s", keyPath, __PRETTY_FUNCTION__);
 }
 
 + (BOOL)requiresConstraintBasedLayout {
